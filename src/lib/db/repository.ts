@@ -987,6 +987,76 @@ class Repository {
     return markEntry;
   }
 
+  public submitBulkStudentMarks(
+    assessmentId: string,
+    entries: Array<{
+      studentId: string;
+      marks: { theory: number; practical: number; project: number; creativity: number; participation: number };
+      facultyRemarks: string;
+    }>,
+    submittedBy: string
+  ): AssessmentMarks[] {
+    const updated: AssessmentMarks[] = [];
+
+    entries.forEach((entry) => {
+      const calc = calculateAssessmentGrade(
+        entry.marks.theory,
+        entry.marks.practical,
+        entry.marks.project,
+        entry.marks.creativity,
+        entry.marks.participation
+      );
+
+      let markEntry = this.state.assessmentMarks.find(
+        (am) => am.assessment_id === assessmentId && am.student_id === entry.studentId
+      );
+
+      if (markEntry) {
+        markEntry.theory_marks = calc.theory;
+        markEntry.practical_marks = calc.practical;
+        markEntry.project_marks = calc.project;
+        markEntry.creativity_marks = calc.creativity;
+        markEntry.participation_marks = calc.participation;
+        markEntry.total_marks = calc.total;
+        markEntry.percentage = calc.percentage;
+        markEntry.grade = calc.grade;
+        markEntry.performance_category = calc.performance_category;
+        markEntry.faculty_remarks = entry.facultyRemarks;
+        markEntry.submitted_by = submittedBy;
+        markEntry.updated_at = new Date().toISOString();
+        updated.push(markEntry);
+      } else {
+        markEntry = {
+          id: 'am-' + Math.random().toString(36).substring(2, 9),
+          assessment_id: assessmentId,
+          student_id: entry.studentId,
+          theory_marks: calc.theory,
+          practical_marks: calc.practical,
+          project_marks: calc.project,
+          creativity_marks: calc.creativity,
+          participation_marks: calc.participation,
+          total_marks: calc.total,
+          percentage: calc.percentage,
+          grade: calc.grade,
+          performance_category: calc.performance_category,
+          faculty_remarks: entry.facultyRemarks,
+          submitted_by: submittedBy,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        this.state.assessmentMarks.push(markEntry);
+        updated.push(markEntry);
+      }
+    });
+
+    this.addAuditLog('BULK_SUBMIT_ASSESSMENT_MARKS', 'assessment_marks', assessmentId, {
+      totalStudents: entries.length,
+      timestamp: new Date().toISOString(),
+    });
+    this.saveToStorage();
+    return updated;
+  }
+
   // DYNAMIC LIVE STATS & METRICS (NO HARDCODING)
   public getDashboardMetrics(role: 'admin' | 'faculty' | 'staff', schoolId?: string, facultyId?: string) {
     const schools = this.state.schools.filter((s) => (!schoolId ? true : s.id === schoolId));
