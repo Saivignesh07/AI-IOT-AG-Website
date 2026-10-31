@@ -1,0 +1,504 @@
+import {
+  School,
+  Profile,
+  Faculty,
+  SchoolStaff,
+  ClassGrade,
+  Section,
+  Curriculum,
+  Chapter,
+  PracticalActivity,
+  Student,
+  Enrollment,
+  Team,
+  TeamMember,
+  Session,
+  Attendance,
+  TeamProgress,
+  Project,
+  ProjectMedia,
+  Assessment,
+  AssessmentMarks,
+  AuditLog,
+} from '@/types';
+
+// SHREE A G JAIN SCHOOL as the primary active institution
+export const INITIAL_SCHOOLS: School[] = [
+  {
+    id: 'jain0000-0000-0000-0000-000000000001',
+    name: 'Shree A G Jain School',
+    code: 'SAGJ-01',
+    address: 'Shree A G Jain Campus, G.N. Chetty Road',
+    city: 'Chennai',
+    state: 'Tamil Nadu',
+    contact_person: 'Principal / Academic Head',
+    phone: '+91 44 2538 1234',
+    email: 'contact@shreeagjainschool.edu.in',
+    is_active: true,
+    max_capacity: 1200,
+    created_at: '2026-10-31T00:00:00Z',
+    updated_at: '2026-10-31T00:00:00Z',
+  },
+];
+
+export const INITIAL_PROFILES: Profile[] = [
+  {
+    id: 'a0000000-0000-0000-0000-000000000001',
+    email: 'admin@agriguardian.io',
+    full_name: 'Vikramaditya Roy (Chief Administrator)',
+    role: 'admin',
+    phone: '+91 98100 00001',
+    created_at: '2026-10-31T00:00:00Z',
+    updated_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'f0000000-0000-0000-0000-000000000001',
+    email: 'dr.arun@agriguardian.io',
+    full_name: 'Dr. Arun Kumar',
+    role: 'faculty',
+    phone: '+91 98100 00002',
+    created_at: '2026-10-31T00:00:00Z',
+    updated_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 's0000000-0000-0000-0000-000000000001',
+    email: 'staff.jainschool@school.edu',
+    full_name: 'Shree A G Jain School Coordinator',
+    role: 'staff',
+    phone: '+91 44 2538 1234',
+    created_at: '2026-10-31T00:00:00Z',
+    updated_at: '2026-10-31T00:00:00Z',
+  },
+];
+
+export const INITIAL_FACULTY: Faculty[] = [
+  {
+    id: 'fa000000-0000-0000-0000-000000000001',
+    profile_id: 'f0000000-0000-0000-0000-000000000001',
+    specialization: 'AI & IoT Agriculture Specialist',
+    qualification: 'Ph.D. in Embedded Systems & AI',
+    phone: '+91 98100 00002',
+    is_substitute_eligible: true,
+    created_at: '2026-10-31T00:00:00Z',
+  },
+];
+
+export const INITIAL_STAFF: SchoolStaff[] = [
+  {
+    id: 'st000000-0000-0000-0000-000000000001',
+    profile_id: 's0000000-0000-0000-0000-000000000001',
+    school_id: 'jain0000-0000-0000-0000-000000000001',
+    designation: 'STEM & Robotics Coordinator',
+    department: 'Science & Technology',
+    employee_id: 'SAGJ-ST-001',
+    can_view_reports: true,
+    created_at: '2026-10-31T00:00:00Z',
+  },
+];
+
+export const INITIAL_CLASSES: ClassGrade[] = [
+  {
+    id: 'c0000000-0000-0000-0000-000000000006',
+    grade_level: 6,
+    name: 'Class 6 - Agri-Innovators',
+    description: 'Foundations of AI sensory observation and basic soil IoT telemetry',
+    academic_year: '2026-2027',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'c0000000-0000-0000-0000-000000000007',
+    grade_level: 7,
+    name: 'Class 7 - Smart Agronomists',
+    description: 'Neural networks for weed identification and automated greenhouse microclimates',
+    academic_year: '2026-2027',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'c0000000-0000-0000-0000-000000000008',
+    grade_level: 8,
+    name: 'Class 8 - Precision Tech Champions',
+    description: 'Edge AI inference on microcontrollers, LoRaWAN mesh, and smart hydroponics',
+    academic_year: '2026-2027',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'c0000000-0000-0000-0000-000000000009',
+    grade_level: 9,
+    name: 'Class 9 - Autonomous Farm Architects',
+    description: 'Deep learning for crop yield prediction, satellite spectral index, autonomous rovers',
+    academic_year: '2026-2027',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+];
+
+export const INITIAL_SECTIONS: Section[] = [
+  // Class 6 Sections
+  {
+    id: 'sec-jain-6a',
+    class_id: 'c0000000-0000-0000-0000-000000000006',
+    school_id: 'jain0000-0000-0000-0000-000000000001',
+    name: 'A',
+    room_number: 'AI-Lab 1',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'sec-jain-6b',
+    class_id: 'c0000000-0000-0000-0000-000000000006',
+    school_id: 'jain0000-0000-0000-0000-000000000001',
+    name: 'B',
+    room_number: 'AI-Lab 2',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  // Class 7 Sections
+  {
+    id: 'sec-jain-7a',
+    class_id: 'c0000000-0000-0000-0000-000000000007',
+    school_id: 'jain0000-0000-0000-0000-000000000001',
+    name: 'A',
+    room_number: 'IoT Bay 1',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'sec-jain-7b',
+    class_id: 'c0000000-0000-0000-0000-000000000007',
+    school_id: 'jain0000-0000-0000-0000-000000000001',
+    name: 'B',
+    room_number: 'IoT Bay 2',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  // Class 8 Sections
+  {
+    id: 'sec-jain-8a',
+    class_id: 'c0000000-0000-0000-0000-000000000008',
+    school_id: 'jain0000-0000-0000-0000-000000000001',
+    name: 'A',
+    room_number: 'Robotics Wing 1',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'sec-jain-8b',
+    class_id: 'c0000000-0000-0000-0000-000000000008',
+    school_id: 'jain0000-0000-0000-0000-000000000001',
+    name: 'B',
+    room_number: 'Robotics Wing 2',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  // Class 9 Sections
+  {
+    id: 'sec-jain-9a',
+    class_id: 'c0000000-0000-0000-0000-000000000009',
+    school_id: 'jain0000-0000-0000-0000-000000000001',
+    name: 'A',
+    room_number: 'Advanced Cell 1',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'sec-jain-9b',
+    class_id: 'c0000000-0000-0000-0000-000000000009',
+    school_id: 'jain0000-0000-0000-0000-000000000001',
+    name: 'B',
+    room_number: 'Advanced Cell 2',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+];
+
+export const INITIAL_CURRICULUM: Curriculum[] = [
+  {
+    id: 'cur00000-0000-0000-0000-000000000006',
+    class_id: 'c0000000-0000-0000-0000-000000000006',
+    academic_year: '2026-2027',
+    title: 'Class 6 AI & IoT Agri-Foundations',
+    description: 'Introductory AI classification & soil telemetry modules',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'cur00000-0000-0000-0000-000000000007',
+    class_id: 'c0000000-0000-0000-0000-000000000007',
+    academic_year: '2026-2027',
+    title: 'Class 7 Smart Agri-Sensors & Vision',
+    description: 'Intermediate machine learning & IoT greenhouse actuators',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'cur00000-0000-0000-0000-000000000008',
+    class_id: 'c0000000-0000-0000-0000-000000000008',
+    academic_year: '2026-2027',
+    title: 'Class 8 Edge AI & Autonomous Actuators',
+    description: 'Embedded neural nets on ESP32/Raspberry Pi and hydro-controllers',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'cur00000-0000-0000-0000-000000000009',
+    class_id: 'c0000000-0000-0000-0000-000000000009',
+    academic_year: '2026-2027',
+    title: 'Class 9 Advanced Agri-Robotics & Cloud IoT',
+    description: 'Autonomous field rovers, multi-sensor telematics and yield models',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+];
+
+// 5 Standardized Chapters per class: 2 AI, 2 IoT, 1 Combined Capstone
+export const INITIAL_CHAPTERS: Chapter[] = [
+  // Class 6
+  {
+    id: 'ch-6-1',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000006',
+    class_id: 'c0000000-0000-0000-0000-000000000006',
+    chapter_number: 1,
+    title: 'Introduction to Artificial Intelligence in Agriculture',
+    category: 'AI',
+    learning_outcomes: 'Understand AI concepts, historical farming challenges, modern precision farming',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-6-2',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000006',
+    class_id: 'c0000000-0000-0000-0000-000000000006',
+    chapter_number: 2,
+    title: 'Computer Vision Basics: Leaf Disease Identification',
+    category: 'AI',
+    learning_outcomes: 'Image classification, training Teachable Machine models, inference accuracy',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-6-3',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000006',
+    class_id: 'c0000000-0000-0000-0000-000000000006',
+    chapter_number: 3,
+    title: 'IoT Microcontrollers and Soil Moisture Sensing',
+    category: 'IoT',
+    learning_outcomes: 'ADC analog readings, capacitive sensor calibration, serial telemetry',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-6-4',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000006',
+    class_id: 'c0000000-0000-0000-0000-000000000006',
+    chapter_number: 4,
+    title: 'Microclimate Telemetry: DHT22 & Ambient Light Monitoring',
+    category: 'IoT',
+    learning_outcomes: 'Temperature, relative humidity, lux monitoring over Wi-Fi',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-6-5',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000006',
+    class_id: 'c0000000-0000-0000-0000-000000000006',
+    chapter_number: 5,
+    title: 'Smart Drip Irrigation Prototype (AI + IoT Capstone)',
+    category: 'AI_IoT_Capstone',
+    learning_outcomes: 'Integrate vision diagnosis with 5V solenoid relay drip actuation',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  // Class 7
+  {
+    id: 'ch-7-1',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000007',
+    class_id: 'c0000000-0000-0000-0000-000000000007',
+    chapter_number: 1,
+    title: 'Neural Networks for Weed Detection',
+    category: 'AI',
+    learning_outcomes: 'Bounding boxes, multi-class plant detection, false positive mitigation',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-7-2',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000007',
+    class_id: 'c0000000-0000-0000-0000-000000000007',
+    chapter_number: 2,
+    title: 'Acoustic AI & Pest Detection Sensors',
+    category: 'AI',
+    learning_outcomes: 'Frequency spectrograms, insect buzz acoustic classification',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-7-3',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000007',
+    class_id: 'c0000000-0000-0000-0000-000000000007',
+    chapter_number: 3,
+    title: 'ESP32 MQTT Publish-Subscribe Networks',
+    category: 'IoT',
+    learning_outcomes: 'Broker architecture, payload serialisation, mesh sensors',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-7-4',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000007',
+    class_id: 'c0000000-0000-0000-0000-000000000007',
+    chapter_number: 4,
+    title: 'Automated Greenhouse Microclimate Actuation',
+    category: 'IoT',
+    learning_outcomes: 'Servo motor louvers, DC misting fans, PID threshold loops',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-7-5',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000007',
+    class_id: 'c0000000-0000-0000-0000-000000000007',
+    chapter_number: 5,
+    title: 'Pest Sentinel & Automated Canopy Shield (Capstone)',
+    category: 'AI_IoT_Capstone',
+    learning_outcomes: 'Acoustic/vision pest trigger with automatic servo netting deployment',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  // Class 8
+  {
+    id: 'ch-8-1',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000008',
+    class_id: 'c0000000-0000-0000-0000-000000000008',
+    chapter_number: 1,
+    title: 'Edge AI Inference on Microcontrollers',
+    category: 'AI',
+    learning_outcomes: 'TensorFlow Lite for Microcontrollers, model quantisation',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-8-2',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000008',
+    class_id: 'c0000000-0000-0000-0000-000000000008',
+    chapter_number: 2,
+    title: 'Soil Nutrient & NPK Prediction Models',
+    category: 'AI',
+    learning_outcomes: 'Regression algorithms for nitrogen, phosphorus, potassium estimation',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-8-3',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000008',
+    class_id: 'c0000000-0000-0000-0000-000000000008',
+    chapter_number: 3,
+    title: 'LoRaWAN Long-Range Field Telemetry',
+    category: 'IoT',
+    learning_outcomes: 'Sub-GHz radio, gateway routing, low-power sleep modes',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-8-4',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000008',
+    class_id: 'c0000000-0000-0000-0000-000000000008',
+    chapter_number: 4,
+    title: 'Smart Hydroponics & pH/EC Dosing Actuators',
+    category: 'IoT',
+    learning_outcomes: 'Peristaltic pumps, electrical conductivity probes, automated dosing',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-8-5',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000008',
+    class_id: 'c0000000-0000-0000-0000-000000000008',
+    chapter_number: 5,
+    title: 'Autonomous Agri-Rover Prototype (Capstone)',
+    category: 'AI_IoT_Capstone',
+    learning_outcomes: 'Differential drive robot with edge CV camera and live telemetry',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  // Class 9
+  {
+    id: 'ch-9-1',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000009',
+    class_id: 'c0000000-0000-0000-0000-000000000009',
+    chapter_number: 1,
+    title: 'Deep Learning for Crop Yield Prediction',
+    category: 'AI',
+    learning_outcomes: 'Time-series forecasting, LSTM networks, weather correlation',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-9-2',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000009',
+    class_id: 'c0000000-0000-0000-0000-000000000009',
+    chapter_number: 2,
+    title: 'Satellite Multispectral Imagery & NDVI Analysis',
+    category: 'AI',
+    learning_outcomes: 'Normalized Difference Vegetation Index, satellite pixel analysis',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-9-3',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000009',
+    class_id: 'c0000000-0000-0000-0000-000000000009',
+    chapter_number: 3,
+    title: 'Cloud IoT Telemetry Pipelines & Digital Twin',
+    category: 'IoT',
+    learning_outcomes: 'Cloud data ingestion, WebSocket real-time charts, farm digital twin',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-9-4',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000009',
+    class_id: 'c0000000-0000-0000-0000-000000000009',
+    chapter_number: 4,
+    title: 'Robotic Harvester Arm & Inverse Kinematics',
+    category: 'IoT',
+    learning_outcomes: '3-axis robotic arm, end-effector gripper, spatial coordinates',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'ch-9-5',
+    curriculum_id: 'cur00000-0000-0000-0000-000000000009',
+    class_id: 'c0000000-0000-0000-0000-000000000009',
+    chapter_number: 5,
+    title: 'AgriGuardian Autonomous Farm Platform (Capstone)',
+    category: 'AI_IoT_Capstone',
+    learning_outcomes: 'Comprehensive multi-sensor IoT network, edge AI rover, cloud dashboards',
+    created_at: '2026-10-31T00:00:00Z',
+  },
+];
+
+export const INITIAL_PRACTICALS: PracticalActivity[] = [
+  {
+    id: 'pa-6-1',
+    chapter_id: 'ch-6-2',
+    title: 'Leaf Blight Visual Classifier Experiment',
+    description: 'Train a 2-class Teachable Machine vision model to classify tomato blight with 90%+ confidence',
+    required_hardware: 'Webcam, Plant Specimen leaves, Laptop',
+    max_score: 30,
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'pa-6-2',
+    chapter_id: 'ch-6-3',
+    title: 'Calibrating Capacitive Soil Probe in Dry vs Saturated Soils',
+    description: 'Read analog ADC values on ESP32, plot step-response curves, determine optimal moisture threshold',
+    required_hardware: 'ESP32 NodeMCU, Capacitive Probe v1.2, Soil test cups',
+    max_score: 30,
+    created_at: '2026-10-31T00:00:00Z',
+  },
+  {
+    id: 'pa-6-3',
+    chapter_id: 'ch-6-5',
+    title: 'Automated 5V DC Submersible Pump Relay Interfacing',
+    description: 'Write C++ firmware logic that turns on water pump when both AI visual check and soil sensor agree',
+    required_hardware: '5V Relay module, 5V Mini Submersible pump, Vinyl tubing',
+    max_score: 30,
+    created_at: '2026-10-31T00:00:00Z',
+  },
+];
+
+// CLEAN EMPTY LISTS READY FOR SHREE A G JAIN EXCEL IMPORT (SHEETS 6, 7, 8, 9)
+export const INITIAL_STUDENTS: Student[] = [];
+export const INITIAL_ENROLLMENTS: Enrollment[] = [];
+export const INITIAL_TEAMS: Team[] = [];
+export const INITIAL_TEAM_MEMBERS: TeamMember[] = [];
+export const INITIAL_TEAM_PROGRESS: TeamProgress[] = [];
+export const INITIAL_PROJECTS: Project[] = [];
+export const INITIAL_PROJECT_MEDIA: ProjectMedia[] = [];
+export const INITIAL_SESSIONS: Session[] = [];
+export const INITIAL_ATTENDANCE: Attendance[] = [];
+export const INITIAL_ASSESSMENTS: Assessment[] = [];
+export const INITIAL_ASSESSMENT_MARKS: AssessmentMarks[] = [];
+
+export const INITIAL_AUDIT_LOGS: AuditLog[] = [
+  {
+    id: 'aud-jain-init',
+    user_id: 'a0000000-0000-0000-0000-000000000001',
+    user_email: 'admin@agriguardian.io',
+    action: 'INITIALIZED_SHREE_A_G_JAIN_SCHOOL',
+    entity_type: 'school',
+    entity_id: 'jain0000-0000-0000-0000-000000000001',
+    details: {
+      message: 'Dummy records purged. Platform configured for Shree A G Jain School (Classes 6, 7, 8, 9). Ready for multi-sheet Excel student roster import.',
+    },
+    created_at: '2026-10-31T11:40:00Z',
+  },
+];
