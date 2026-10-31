@@ -10,6 +10,7 @@ import {
   ChevronDown,
   Sparkles,
   KeyRound,
+  Menu,
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import { dbRepository } from '@/lib/db/repository';
@@ -18,7 +19,11 @@ import { ChangePasswordModal } from '@/components/change-password-modal';
 import { CloudSyncModal } from '@/components/cloud-sync-modal';
 import { School } from '@/types';
 
-export function Topbar() {
+interface TopbarProps {
+  onToggleMobileMenu?: () => void;
+}
+
+export function Topbar({ onToggleMobileMenu }: TopbarProps) {
   const pathname = usePathname();
   const { role, currentSchool, setCurrentSchool, staffRecord, switchUser, user } = useAuth();
   const [schools, setSchools] = useState<School[]>([]);
@@ -45,12 +50,20 @@ export function Topbar() {
   const isStaff = role === 'staff';
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-20">
+    <header className="h-16 bg-white border-b border-slate-200 px-3 sm:px-6 flex items-center justify-between sticky top-0 z-20 gap-2">
       {/* Page Title & Breadcrumb */}
-      <div className="flex items-center gap-3">
-        <div>
-          <h1 className="text-lg font-bold text-slate-800 leading-tight">{getPageTitle()}</h1>
-          <p className="text-xs text-slate-500 font-medium hidden sm:block">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <button
+          type="button"
+          onClick={onToggleMobileMenu}
+          className="md:hidden p-2 -ml-1 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer shrink-0"
+          aria-label="Open Navigation Menu"
+        >
+          <Menu className="w-5 h-5 text-emerald-900" />
+        </button>
+        <div className="min-w-0">
+          <h1 className="text-base sm:text-lg font-bold text-slate-800 leading-tight truncate">{getPageTitle()}</h1>
+          <p className="text-xs text-slate-500 font-medium hidden sm:block truncate">
             {role === 'admin'
               ? 'AgriGuardian Master Admin Center'
               : role === 'faculty'
@@ -61,41 +74,41 @@ export function Topbar() {
       </div>
 
       {/* Right Actions */}
-      <div className="flex items-center gap-3 sm:gap-4">
+      <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
         {/* Cloud Database Status Pill & Sync Trigger */}
         <button
           onClick={() => setIsSyncModalOpen(true)}
           title="Cloud Database Synced - Click to view status & universal sync details"
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 transition-colors cursor-pointer"
         >
           <Database className="w-3.5 h-3.5 text-emerald-700" />
-          <span className="text-[11px]">
-            {isSupabaseConfigured ? 'Supabase Live' : 'Cloud DB Synced'}
+          <span className="text-[11px] hidden sm:inline">
+            {isSupabaseConfigured ? 'Supabase Live' : 'Cloud DB'}
           </span>
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
         </button>
 
         {/* School Selector (Interactive for Admin/Faculty, Locked for Staff) */}
-        <div className="relative">
+        <div className="relative hidden xs:block sm:block">
           {isStaff ? (
             <div
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-900 border border-emerald-200"
+              className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-900 border border-emerald-200"
               title="School staff access is strictly restricted to your assigned school"
             >
-              <Lock className="w-3.5 h-3.5 text-emerald-700" />
-              <span className="max-w-[140px] truncate">{staffRecord?.school?.name || 'Assigned School'}</span>
+              <Lock className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+              <span className="max-w-[80px] sm:max-w-[140px] truncate">{staffRecord?.school?.name || 'Assigned School'}</span>
             </div>
           ) : (
             <>
               <button
                 onClick={() => setShowSchoolDropdown(!showSchoolDropdown)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer"
               >
-                <Building2 className="w-3.5 h-3.5 text-emerald-700" />
-                <span className="max-w-[150px] truncate">
-                  {currentSchool ? currentSchool.name : 'All Registered Schools'}
+                <Building2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                <span className="max-w-[80px] sm:max-w-[150px] truncate">
+                  {currentSchool ? currentSchool.name : 'All Schools'}
                 </span>
-                <ChevronDown className="w-3 h-3 text-slate-400" />
+                <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />
               </button>
 
               {showSchoolDropdown && (

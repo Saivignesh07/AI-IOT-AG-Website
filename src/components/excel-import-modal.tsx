@@ -226,7 +226,7 @@ export function ExcelImportModal({ isOpen, onClose, onSuccess }: ExcelImportModa
             <h4 className="font-extrabold text-base text-emerald-950">
               Successfully Enrolled {successResult.totalImported} Students!
             </h4>
-            <div className="flex justify-center gap-3 text-xs pt-1">
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 text-xs pt-1">
               <span className="bg-white px-2.5 py-1 rounded-lg border border-emerald-200 font-semibold text-slate-800">
                 Class 6: {successResult.classWiseCounts[6] || 0}
               </span>
@@ -249,7 +249,7 @@ export function ExcelImportModal({ isOpen, onClose, onSuccess }: ExcelImportModa
                 resetState();
                 onClose();
               }}
-              className="mt-3"
+              className="mt-3 w-full sm:w-auto"
             >
               Close & View Student Directory
             </Button>
@@ -258,7 +258,7 @@ export function ExcelImportModal({ isOpen, onClose, onSuccess }: ExcelImportModa
 
         {/* Upload Dropzone */}
         {!successResult && parsedSheets.length === 0 && (
-          <div className="border-2 border-dashed border-slate-300 hover:border-emerald-600 rounded-2xl p-8 text-center bg-slate-50/50 hover:bg-emerald-50/30 transition-all cursor-pointer relative">
+          <div className="border-2 border-dashed border-slate-300 hover:border-emerald-600 rounded-2xl p-5 sm:p-8 text-center bg-slate-50/50 hover:bg-emerald-50/30 transition-all cursor-pointer relative">
             <input
               type="file"
               accept=".xlsx,.xls,.csv"

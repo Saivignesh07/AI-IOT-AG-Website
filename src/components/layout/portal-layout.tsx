@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { Sidebar } from './sidebar';
 import { Topbar } from './topbar';
 import { useAuth } from '@/lib/auth/auth-context';
@@ -15,6 +15,8 @@ interface PortalLayoutProps {
 export function PortalLayout({ children, allowedRoles }: PortalLayoutProps) {
   const { user, role, isLoading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!isLoading) {
@@ -29,6 +31,11 @@ export function PortalLayout({ children, allowedRoles }: PortalLayoutProps) {
     }
   }, [user, role, isLoading, allowedRoles, router]);
 
+  // Close mobile sidebar automatically on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -42,10 +49,23 @@ export function PortalLayout({ children, allowedRoles }: PortalLayoutProps) {
 
   return (
     <div className="flex min-h-screen bg-[#F8FAFC]">
-      <Sidebar />
+      {/* Mobile Backdrop Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-slate-950/60 z-40 backdrop-blur-xs md:hidden animate-in fade-in duration-200"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar (docked on desktop, slideout on mobile) */}
+      <Sidebar
+        isMobileOpen={isMobileMenuOpen}
+        onCloseMobile={() => setIsMobileMenuOpen(false)}
+      />
+
       <div className="flex-1 flex flex-col min-w-0">
-        <Topbar />
-        <main className="flex-1 p-6 sm:p-8 max-w-7xl w-full mx-auto overflow-y-auto">
+        <Topbar onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto overflow-y-auto">
           {children}
         </main>
       </div>

@@ -47,7 +47,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-900 flex flex-col justify-center py-6 px-4 sm:py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-[radial-gradient(#14532D_1px,transparent_1px)] [background-size:24px_24px] opacity-30" />
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -55,19 +55,19 @@ export default function LoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         {/* Brand Icon & Heading */}
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-green-400 shadow-xl shadow-emerald-950/60 mb-3 border border-emerald-400/30">
-            <Leaf className="w-8 h-8 text-emerald-950" />
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-green-400 shadow-xl shadow-emerald-950/60 mb-2 sm:mb-3 border border-emerald-400/30">
+            <Leaf className="w-7 h-7 sm:w-8 sm:h-8 text-emerald-950" />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h2 className="text-xl sm:text-3xl font-extrabold text-white tracking-tight">
             AGRIGUARDIAN <span className="text-emerald-400">LMS</span>
           </h2>
-          <p className="mt-1.5 text-xs sm:text-sm text-slate-400 font-medium max-w-sm mx-auto">
+          <p className="mt-1 text-xs sm:text-sm text-slate-400 font-medium max-w-sm mx-auto">
             Multi-School AI + IoT Education Management & Monitoring Platform
           </p>
         </div>
 
         {/* Login Card */}
-        <div className="mt-8 bg-white py-8 px-6 sm:px-10 shadow-2xl rounded-2xl border border-slate-200">
+        <div className="mt-5 sm:mt-8 bg-white py-6 px-4 sm:py-8 sm:px-10 shadow-2xl rounded-2xl border border-slate-200">
           {error && (
             <Alert variant="error" className="mb-5">
               {error}

@@ -22,13 +22,19 @@ import {
   FileSpreadsheet,
   KeyRound,
   Database,
+  X,
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import { ChangePasswordModal } from '@/components/change-password-modal';
 import { CloudSyncModal } from '@/components/cloud-sync-modal';
 import { cn } from '@/lib/utils';
 
-export function Sidebar() {
+interface SidebarProps {
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
+}
+
+export function Sidebar({ isMobileOpen = false, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
   const { user, role, logout, currentSchool, staffRecord } = useAuth();
   const [isPasswordModalOpen, setIsPasswordModalOpen] = React.useState(false);
@@ -67,23 +73,43 @@ export function Sidebar() {
   const navItems = role === 'admin' ? adminNav : role === 'faculty' ? facultyNav : staffNav;
 
   return (
-    <aside className="w-64 bg-[#0F3D20] text-emerald-50 flex flex-col shrink-0 h-screen sticky top-0 border-r border-emerald-950/60 z-30">
+    <aside
+      className={cn(
+        'bg-[#0F3D20] text-emerald-50 flex flex-col h-screen border-r border-emerald-950/60 z-50 md:z-30 transition-transform duration-300 ease-in-out',
+        // Desktop docked
+        'md:sticky md:top-0 md:w-64 md:shrink-0 md:translate-x-0 md:flex',
+        // Mobile drawer
+        'fixed inset-y-0 left-0 w-72 shadow-2xl',
+        isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+      )}
+    >
       {/* Brand Header */}
-      <div className="p-5 border-b border-emerald-900/60 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-green-400 flex items-center justify-center text-emerald-950 font-bold shadow-md shadow-emerald-950/50">
-          <Leaf className="w-6 h-6 text-emerald-950" />
-        </div>
-        <div>
-          <div className="flex items-center gap-1.5">
-            <span className="font-extrabold tracking-wider text-base text-white">AGRIGUARDIAN</span>
-            <span className="text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-400/30">
-              LMS
-            </span>
+      <div className="p-4 sm:p-5 border-b border-emerald-900/60 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-green-400 flex items-center justify-center text-emerald-950 font-bold shadow-md shadow-emerald-950/50 shrink-0">
+            <Leaf className="w-6 h-6 text-emerald-950" />
           </div>
-          <p className="text-[11px] text-emerald-300/80 font-medium tracking-tight">
-            AI + IoT School Platform
-          </p>
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="font-extrabold tracking-wider text-base text-white">AGRIGUARDIAN</span>
+              <span className="text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-400/30">
+                LMS
+              </span>
+            </div>
+            <p className="text-[11px] text-emerald-300/80 font-medium tracking-tight truncate">
+              AI + IoT School Platform
+            </p>
+          </div>
         </div>
+
+        {/* Mobile Close Button */}
+        <button
+          onClick={onCloseMobile}
+          className="md:hidden p-1.5 rounded-lg text-emerald-300 hover:text-white hover:bg-emerald-900/70 transition-colors"
+          aria-label="Close navigation"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Role & School Badge */}
@@ -128,6 +154,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => onCloseMobile?.()}
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all group',
                 isActive
