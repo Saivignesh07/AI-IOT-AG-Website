@@ -56,15 +56,19 @@ export default function StaffStudentDirectoryPage() {
   );
 
   const handleExport = () => {
-    const exportData = filteredStudents.map((st) => ({
-      Roll_Number: st.roll_number,
-      Full_Name: `${st.first_name} ${st.last_name}`,
-      Gender: st.gender,
-      Class: `Class ${selectedGrade}`,
-      Team_Name: st.team?.name || 'Unassigned',
-      Attendance_Percentage: '94.2%',
-      Latest_Grade: 'A+',
-    }));
+    const exportData = filteredStudents.map((st) => {
+      const attStats = dbRepository.getStudentAttendanceStats(st.id);
+      const assessment = dbRepository.getStudentLatestAssessment(st.id);
+      return {
+        Roll_Number: st.roll_number,
+        Full_Name: `${st.first_name} ${st.last_name}`,
+        Gender: st.gender,
+        Class: `Class ${selectedGrade}`,
+        Team_Name: st.team?.name || 'Unassigned',
+        Attendance_Percentage: attStats.percentage !== null ? `${attStats.percentage}%` : 'Not Marked',
+        Latest_Grade: assessment ? assessment.grade : 'Not Evaluated',
+      };
+    });
     exportToCSV(`students_class_${selectedGrade}`, exportData);
   };
 
@@ -141,38 +145,50 @@ export default function StaffStudentDirectoryPage() {
                     </td>
                   </tr>
                 ) : (
-                  filteredStudents.map((st) => (
-                    <tr key={st.id} className="hover:bg-slate-50/70 transition-colors">
-                      <td className="px-6 py-4 font-mono font-bold text-slate-800 text-xs">
-                        {st.roll_number}
-                      </td>
-                      <td className="px-6 py-4 font-semibold text-slate-900">
-                        {st.first_name} {st.last_name}
-                      </td>
-                      <td className="px-6 py-4">
-                        <Badge variant="default">Class {selectedGrade}</Badge>
-                      </td>
-                      <td className="px-6 py-4">
-                        {st.team ? (
-                          <span className="font-semibold text-emerald-800 text-xs flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                            {st.team.name}
-                          </span>
-                        ) : (
-                          <span className="text-slate-400 text-xs italic">Unassigned</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 font-bold text-emerald-700">
-                        94.2%
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-1.5">
-                          <Badge variant="success">Grade A+</Badge>
-                          <span className="text-xs text-slate-500 font-medium">(92.5%)</span>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                  filteredStudents.map((st) => {
+                    const attStats = dbRepository.getStudentAttendanceStats(st.id);
+                    const assessment = dbRepository.getStudentLatestAssessment(st.id);
+                    return (
+                      <tr key={st.id} className="hover:bg-slate-50/70 transition-colors">
+                        <td className="px-6 py-4 font-mono font-bold text-slate-800 text-xs">
+                          {st.roll_number}
+                        </td>
+                        <td className="px-6 py-4 font-semibold text-slate-900">
+                          {st.first_name} {st.last_name}
+                        </td>
+                        <td className="px-6 py-4">
+                          <Badge variant="default">Class {selectedGrade}</Badge>
+                        </td>
+                        <td className="px-6 py-4">
+                          {st.team ? (
+                            <span className="font-semibold text-emerald-800 text-xs flex items-center gap-1.5">
+                              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                              {st.team.name}
+                            </span>
+                          ) : (
+                            <span className="text-slate-400 text-xs italic">Unassigned</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          {attStats.percentage !== null ? (
+                            <span className="font-bold text-emerald-700">{attStats.percentage}%</span>
+                          ) : (
+                            <span className="text-slate-400 text-xs italic">Not Marked</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          {assessment ? (
+                            <div className="flex items-center gap-1.5">
+                              <Badge variant="success">Grade {assessment.grade}</Badge>
+                              <span className="text-xs text-slate-500 font-medium">({assessment.percentage}%)</span>
+                            </div>
+                          ) : (
+                            <span className="text-slate-400 text-xs italic">Not Evaluated</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>

@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
+import { ClipboardX } from 'lucide-react';
 
 interface AssessmentChartProps {
   data?: Array<{
@@ -18,15 +19,17 @@ interface AssessmentChartProps {
   }>;
 }
 
-const DEFAULT_GRADE_DATA = [
-  { name: 'A+ (90-100%)', value: 45, color: '#15803D' },
-  { name: 'A (80-89%)', value: 30, color: '#16A34A' },
-  { name: 'B (70-79%)', value: 15, color: '#3B82F6' },
-  { name: 'C (60-69%)', value: 7, color: '#F59E0B' },
-  { name: 'Needs Support (<60%)', value: 3, color: '#EF4444' },
-];
+export function AssessmentDistributionChart({ data }: AssessmentChartProps) {
+  if (!data || data.length === 0) {
+    return (
+      <div className="w-full h-72 flex flex-col items-center justify-center gap-3 text-slate-400">
+        <ClipboardX className="w-10 h-10 opacity-40" />
+        <p className="text-sm font-medium">No assessments recorded yet</p>
+        <p className="text-xs text-slate-400">Grade distribution will appear here once marks are entered</p>
+      </div>
+    );
+  }
 
-export function AssessmentDistributionChart({ data = DEFAULT_GRADE_DATA }: AssessmentChartProps) {
   return (
     <div className="w-full h-72 flex items-center justify-center">
       <ResponsiveContainer width="100%" height="100%">

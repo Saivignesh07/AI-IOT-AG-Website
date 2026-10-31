@@ -104,6 +104,9 @@ function getInitialState(): DatabaseState {
 class Repository {
   private state: DatabaseState;
   private listeners: Set<() => void> = new Set();
+  private lastSyncedAt: string | null = null;
+  private isSyncing: boolean = false;
+  private pushTimer: any = null;
 
   constructor() {
     this.state = getInitialState();
@@ -119,6 +122,20 @@ class Repository {
       } catch (e) {
         console.warn('Failed to load local DB state', e);
       }
+
+      // Automatically sync with central cloud server on start
+      setTimeout(() => {
+        this.syncWithServer();
+      }, 300);
+
+      // Re-sync whenever the browser tab regains focus or every 25 seconds
+      window.addEventListener('focus', () => {
+        this.syncWithServer();
+      });
+
+      setInterval(() => {
+        this.syncWithServer();
+      }, 25000);
     }
   }
 
@@ -127,10 +144,100 @@ class Repository {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
         this.notifyListeners();
+        this.debouncedPushToServer();
       } catch (e) {
         console.error('Error saving state to localStorage', e);
       }
     }
+  }
+
+  private debouncedPushToServer() {
+    if (typeof window === 'undefined') return;
+    if (this.pushTimer) clearTimeout(this.pushTimer);
+    this.pushTimer = setTimeout(() => {
+      this.pushToServer();
+    }, 600);
+  }
+
+  public async pushToServer(): Promise<boolean> {
+    if (typeof window === 'undefined') return false;
+    try {
+      this.isSyncing = true;
+      const res = await fetch('/api/db', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.state),
+      });
+      if (res.ok) {
+        const result = await res.json();
+        this.lastSyncedAt = result.updatedAt || new Date().toISOString();
+        this.isSyncing = false;
+        return true;
+      }
+    } catch (err) {
+      console.warn('Cloud sync push failed, will retry next time:', err);
+    } finally {
+      this.isSyncing = false;
+    }
+    return false;
+  }
+
+  public async syncWithServer(): Promise<boolean> {
+    if (typeof window === 'undefined') return false;
+    if (this.isSyncing) return false;
+    try {
+      this.isSyncing = true;
+      const res = await fetch('/api/db');
+      if (res.ok) {
+        const result = await res.json();
+        if (result.hasData && result.data) {
+          const serverData = result.data;
+          // Merge server data with our initial state
+          this.state = { ...getInitialState(), ...serverData };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+          this.lastSyncedAt = result.updatedAt || new Date().toISOString();
+          this.notifyListeners();
+          return true;
+        } else if (!result.hasData && this.state.students && this.state.students.length > 0) {
+          // Server is empty but client has records (e.g. students imported), seed the server!
+          this.pushToServer();
+        }
+      }
+    } catch (err) {
+      console.warn('Cloud sync pull failed:', err);
+    } finally {
+      this.isSyncing = false;
+    }
+    return false;
+  }
+
+  public exportDatabaseJSON(): string {
+    return JSON.stringify(this.state, null, 2);
+  }
+
+  public importDatabaseJSON(jsonStr: string): boolean {
+    try {
+      const parsed = JSON.parse(jsonStr);
+      if (parsed && typeof parsed === 'object') {
+        this.state = { ...getInitialState(), ...parsed };
+        this.saveToStorage();
+        this.pushToServer();
+        return true;
+      }
+    } catch (err) {
+      console.error('Invalid database JSON import:', err);
+    }
+    return false;
+  }
+
+  public getSyncStatus() {
+    return {
+      lastSyncedAt: this.lastSyncedAt,
+      isSyncing: this.isSyncing,
+      studentsCount: this.state.students?.length || 0,
+      attendanceCount: this.state.attendance?.length || 0,
+      assessmentsCount: this.state.assessmentMarks?.length || 0,
+    };
   }
 
   public subscribe(listener: () => void): () => void {
@@ -1093,26 +1200,30 @@ class Repository {
     const sessionIds = new Set(allSessions.map((s) => s.id));
     const attendanceRecords = this.state.attendance.filter((a) => sessionIds.has(a.session_id));
     const presentRecords = attendanceRecords.filter((a) => a.status === 'present' || a.status === 'late');
-    const attendancePercentage = attendanceRecords.length > 0
+    const hasAttendanceData = attendanceRecords.length > 0;
+    const attendancePercentage = hasAttendanceData
       ? Number(((presentRecords.length / attendanceRecords.length) * 100).toFixed(1))
-      : 88.5;
+      : 0;
 
     // Course completion calculation: based on completed team_progress records
     const relevantTeams = this.state.teams.filter((t) => (!schoolId ? true : t.school_id === schoolId));
     const relevantTeamIds = new Set(relevantTeams.map((t) => t.id));
     const teamProgressRecords = this.state.teamProgress.filter((tp) => relevantTeamIds.has(tp.team_id));
     const completedProgress = teamProgressRecords.filter((tp) => tp.status === 'Completed').length;
-    const totalPossibleProgress = Math.max(teamProgressRecords.length, 1);
-    const courseCompletionPercentage = Number(((completedProgress / totalPossibleProgress) * 100).toFixed(1));
+    const totalPossibleProgress = teamProgressRecords.length;
+    const courseCompletionPercentage = totalPossibleProgress > 0
+      ? Number(((completedProgress / totalPossibleProgress) * 100).toFixed(1))
+      : 0;
 
     // Assessment average
     const marks = this.state.assessmentMarks.filter((m) => {
       const st = this.state.students.find((s) => s.id === m.student_id);
       return !schoolId ? true : st?.school_id === schoolId;
     });
-    const avgScore = marks.length > 0
+    const hasAssessmentData = marks.length > 0;
+    const avgScore = hasAssessmentData
       ? Number((marks.reduce((acc, curr) => acc + curr.total_marks, 0) / marks.length).toFixed(1))
-      : 85.0;
+      : 0;
 
     // Faculty specific metrics
     const facultySessions = this.state.sessions.filter(
@@ -1127,13 +1238,33 @@ class Repository {
       totalFaculty: faculty.length,
       totalClasses: classes.length,
       totalTeams: teams.length,
+      hasAttendanceData,
       attendancePercentage,
       courseCompletionPercentage,
+      hasAssessmentData,
       assessmentAverage: avgScore,
       completedSessions: completedFacultySessions,
       upcomingSessions: upcomingFacultySessions,
       recentSessions: allSessions.slice(0, 5),
     };
+  }
+
+  // Individual student stats helpers
+  public getStudentAttendanceStats(studentId: string): { total: number; present: number; percentage: number | null } {
+    const studentRecords = this.state.attendance.filter((a) => a.student_id === studentId);
+    if (studentRecords.length === 0) {
+      return { total: 0, present: 0, percentage: null };
+    }
+    const present = studentRecords.filter((a) => a.status === 'present' || a.status === 'late').length;
+    return {
+      total: studentRecords.length,
+      present,
+      percentage: Number(((present / studentRecords.length) * 100).toFixed(1)),
+    };
+  }
+
+  public getStudentLatestAssessment(studentId: string): AssessmentMarks | undefined {
+    return this.state.assessmentMarks.find((m) => m.student_id === studentId);
   }
 }
 

@@ -112,15 +112,15 @@ export default function StaffDashboardPage() {
           />
           <StatsCard
             title="Overall Attendance"
-            value={`${metrics.attendancePercentage}%`}
-            subtitle="Recorded by faculty"
+            value={metrics.hasAttendanceData ? `${metrics.attendancePercentage}%` : 'Not Recorded'}
+            subtitle={metrics.hasAttendanceData ? 'Recorded by faculty' : 'Awaiting first session'}
             icon={CalendarCheck}
             color="blue"
           />
           <StatsCard
             title="Monthly Assessment Avg"
-            value={`${metrics.assessmentAverage} / 100`}
-            subtitle="October 2026 rubric"
+            value={metrics.hasAssessmentData ? `${metrics.assessmentAverage} / 100` : 'Not Evaluated'}
+            subtitle={metrics.hasAssessmentData ? 'Current term rubric' : 'Awaiting first grading'}
             icon={Award}
             color="amber"
           />
@@ -131,7 +131,9 @@ export default function StaffDashboardPage() {
           <Card className="p-5 flex items-center justify-between bg-white">
             <div>
               <p className="text-xs uppercase font-semibold text-slate-500">Course Milestone Progress</p>
-              <h4 className="text-2xl font-bold text-slate-900 mt-1">{metrics.courseCompletionPercentage}% Completed</h4>
+              <h4 className="text-2xl font-bold text-slate-900 mt-1">
+                {metrics.courseCompletionPercentage > 0 ? `${metrics.courseCompletionPercentage}% Completed` : 'Term Commencing'}
+              </h4>
               <p className="text-xs text-slate-500 mt-0.5">Chapters and practical labs verified</p>
             </div>
             <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">

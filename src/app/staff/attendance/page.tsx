@@ -72,7 +72,7 @@ export default function StaffAttendanceMonitoringPage() {
   const lateCount = attendanceRecords.filter((a) => a.status === 'late').length;
   const absentCount = attendanceRecords.filter((a) => a.status === 'absent').length;
   const total = attendanceRecords.length;
-  const percentage = total > 0 ? (((presentCount + lateCount) / total) * 100).toFixed(1) : '94.0';
+  const percentage = total > 0 ? (((presentCount + lateCount) / total) * 100).toFixed(1) : null;
 
   return (
     <PortalLayout allowedRoles={['staff', 'admin']}>
@@ -183,7 +183,9 @@ export default function StaffAttendanceMonitoringPage() {
           </div>
           <div className="bg-slate-900 text-white p-4 rounded-xl text-center">
             <span className="text-[10px] uppercase font-bold text-emerald-400 block">Attendance Rate</span>
-            <span className="text-2xl font-extrabold text-white mt-1">{percentage}%</span>
+            <span className="text-xl sm:text-2xl font-extrabold text-white mt-1">
+              {percentage !== null ? `${percentage}%` : 'Not Recorded'}
+            </span>
           </div>
         </div>
 
@@ -191,9 +193,11 @@ export default function StaffAttendanceMonitoringPage() {
         <Card>
           <CardHeader>
             <div>
-              <CardTitle>Session Attendance: {latestSession?.topic || 'Latest Lab Session'}</CardTitle>
+              <CardTitle>Session Attendance: {latestSession?.topic || 'No Active Lab Sessions'}</CardTitle>
               <p className="text-xs text-slate-500 mt-0.5">
-                Conducted on {latestSession ? formatDate(latestSession.session_date) : 'Recent Date'} • Instructor: Dr. Arun Kumar
+                {latestSession
+                  ? `Conducted on ${formatDate(latestSession.session_date)}`
+                  : 'Awaiting first scheduled AI + IoT lab session by faculty'}
               </p>
             </div>
             <Badge variant="success">Faculty Audited</Badge>

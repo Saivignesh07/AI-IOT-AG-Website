@@ -27,16 +27,19 @@ export default function StaffReportsDownloadPage() {
 
   const handleDownloadAttendanceReport = () => {
     const students = dbRepository.getStudents(assignedSchoolId);
-    const data = students.map((st) => ({
-      Roll_Number: st.roll_number,
-      Student_Name: `${st.first_name} ${st.last_name}`,
-      School: schoolName,
-      Class: 'Class 6A',
-      Present_Sessions: 14,
-      Absent_Sessions: 1,
-      Attendance_Percentage: '93.3%',
-      Status: 'Active',
-    }));
+    const data = students.map((st) => {
+      const stats = dbRepository.getStudentAttendanceStats(st.id);
+      return {
+        Roll_Number: st.roll_number,
+        Student_Name: `${st.first_name} ${st.last_name}`,
+        School: schoolName,
+        Class: `Class ${st.grade_level}`,
+        Present_Sessions: stats.present,
+        Absent_Sessions: stats.total - stats.present,
+        Attendance_Percentage: stats.percentage !== null ? `${stats.percentage}%` : 'Not Recorded',
+        Status: 'Active',
+      };
+    });
     exportToCSV(`${schoolName}_attendance_report`, data);
   };
 
@@ -66,12 +69,10 @@ export default function StaffReportsDownloadPage() {
       Team_Name: t.name,
       Team_Number: t.team_number,
       School: schoolName,
-      Designated_Leader: t.leader ? `${t.leader.first_name} ${t.leader.last_name}` : 'N/A',
-      Member_Count: t.members?.length || 4,
-      Project_Title: t.project?.title || 'AutoDrip IoT Prototype',
-      Development_Stage: t.project?.stage || 'Prototyping',
-      Chapters_Completed: '3 of 5 Modules',
-      Overall_Progress: '60%',
+      Designated_Leader: t.leader ? `${t.leader.first_name} ${t.leader.last_name}` : 'Not Assigned',
+      Member_Count: t.members?.length || 'Not Set',
+      Project_Title: t.project?.title || 'Not Assigned',
+      Development_Stage: t.project?.stage || 'Not Started',
     }));
     exportToCSV(`${schoolName}_team_progress_summary`, data);
   };

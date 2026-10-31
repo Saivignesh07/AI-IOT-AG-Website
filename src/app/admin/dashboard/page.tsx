@@ -124,11 +124,10 @@ export default function AdminDashboardPage() {
           />
           <StatsCard
             title="Overall Attendance"
-            value={`${metrics.attendancePercentage}%`}
-            subtitle="Live verified logs"
+            value={metrics.hasAttendanceData ? `${metrics.attendancePercentage}%` : 'Not Recorded'}
+            subtitle={metrics.hasAttendanceData ? 'Live verified logs' : 'Awaiting first session'}
             icon={CalendarCheck}
             color="amber"
-            trend={{ value: '2.4%', isPositive: true }}
           />
         </div>
 

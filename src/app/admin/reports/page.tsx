@@ -45,12 +45,13 @@ export default function AdminReportsPage() {
     if (activeTab === 'attendance') {
       const data = schools.map((sch) => {
         const studentCount = dbRepository.getStudents(sch.id).length;
+        const metrics = dbRepository.getDashboardMetrics('admin', sch.id);
         return {
           School_Name: sch.name,
           Code: sch.code,
           City: sch.city,
           Total_Students: studentCount,
-          Attendance_Rate: '92.4%',
+          Attendance_Rate: metrics.hasAttendanceData ? `${metrics.attendancePercentage}%` : 'Not Recorded',
           Status: sch.is_active ? 'Active' : 'Inactive',
         };
       });
@@ -137,15 +138,21 @@ export default function AdminReportsPage() {
                 <tbody className="divide-y divide-slate-100 text-slate-700">
                   {schools.map((sch) => {
                     const count = dbRepository.getStudents(sch.id).length;
+                    const metrics = dbRepository.getDashboardMetrics('admin', sch.id);
                     return (
                       <tr key={sch.id} className="hover:bg-slate-50/70 transition-colors">
                         <td className="px-6 py-4 font-semibold text-slate-900">{sch.name}</td>
                         <td className="px-6 py-4 font-mono text-xs">{sch.code}</td>
                         <td className="px-6 py-4 text-xs text-slate-500">{sch.city}, {sch.state}</td>
                         <td className="px-6 py-4 font-bold text-slate-800">{count} Students</td>
-                        <td className="px-6 py-4 font-bold text-emerald-700">92.4%</td>
+                        <td className="px-6 py-4 font-bold text-emerald-700">
+                          {metrics.hasAttendanceData ? `${metrics.attendancePercentage}%` : 'Not Recorded'}
+                        </td>
                         <td className="px-6 py-4">
-                          <Badge variant="success">Compliant</Badge>
+                          {metrics.hasAttendanceData
+                            ? <Badge variant="success">Compliant</Badge>
+                            : <Badge variant="default">Awaiting Data</Badge>
+                          }
                         </td>
                       </tr>
                     );

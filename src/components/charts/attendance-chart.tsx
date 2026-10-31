@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
+import { CalendarX } from 'lucide-react';
 
 interface AttendanceChartProps {
   data?: Array<{
@@ -21,16 +22,17 @@ interface AttendanceChartProps {
   }>;
 }
 
-const DEFAULT_DATA = [
-  { date: 'Mon 26', present: 28, absent: 2, late: 2 },
-  { date: 'Tue 27', present: 30, absent: 1, late: 1 },
-  { date: 'Wed 28', present: 29, absent: 3, late: 0 },
-  { date: 'Thu 29', present: 31, absent: 1, late: 0 },
-  { date: 'Fri 30', present: 27, absent: 4, late: 1 },
-  { date: 'Sat 31', present: 32, absent: 0, late: 0 },
-];
+export function AttendanceChart({ data }: AttendanceChartProps) {
+  if (!data || data.length === 0) {
+    return (
+      <div className="w-full h-72 flex flex-col items-center justify-center gap-3 text-slate-400">
+        <CalendarX className="w-10 h-10 opacity-40" />
+        <p className="text-sm font-medium">No sessions recorded yet</p>
+        <p className="text-xs text-slate-400">Attendance data will appear here once sessions are marked</p>
+      </div>
+    );
+  }
 
-export function AttendanceChart({ data = DEFAULT_DATA }: AttendanceChartProps) {
   return (
     <div className="w-full h-72">
       <ResponsiveContainer width="100%" height="100%">

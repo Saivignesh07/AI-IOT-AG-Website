@@ -15,6 +15,7 @@ import { useAuth } from '@/lib/auth/auth-context';
 import { dbRepository } from '@/lib/db/repository';
 import { isSupabaseConfigured } from '@/lib/supabase/client';
 import { ChangePasswordModal } from '@/components/change-password-modal';
+import { CloudSyncModal } from '@/components/cloud-sync-modal';
 import { School } from '@/types';
 
 export function Topbar() {
@@ -24,6 +25,7 @@ export function Topbar() {
   const [showSchoolDropdown, setShowSchoolDropdown] = useState(false);
   const [showRoleDropdown, setShowRoleDropdown] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
 
   useEffect(() => {
     setSchools(dbRepository.getSchools());
@@ -60,21 +62,18 @@ export function Topbar() {
 
       {/* Right Actions */}
       <div className="flex items-center gap-3 sm:gap-4">
-        {/* Supabase Status Pill */}
-        <div
-          title={
-            isSupabaseConfigured
-              ? 'Connected to Supabase PostgreSQL'
-              : 'Operating in Local Storage Mock Mode (Ready for Supabase URL & Key in .env.local)'
-          }
-          className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200"
+        {/* Cloud Database Status Pill & Sync Trigger */}
+        <button
+          onClick={() => setIsSyncModalOpen(true)}
+          title="Cloud Database Synced - Click to view status & universal sync details"
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 transition-colors cursor-pointer"
         >
-          <Database className={`w-3.5 h-3.5 ${isSupabaseConfigured ? 'text-emerald-600' : 'text-emerald-500'}`} />
+          <Database className="w-3.5 h-3.5 text-emerald-700" />
           <span className="text-[11px]">
-            {isSupabaseConfigured ? 'Supabase Live' : 'Local DB (Synced)'}
+            {isSupabaseConfigured ? 'Supabase Live' : 'Cloud DB Synced'}
           </span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-        </div>
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+        </button>
 
         {/* School Selector (Interactive for Admin/Faculty, Locked for Staff) */}
         <div className="relative">
@@ -265,6 +264,12 @@ export function Topbar() {
       <ChangePasswordModal
         isOpen={isPasswordModalOpen}
         onClose={() => setIsPasswordModalOpen(false)}
+      />
+
+      {/* Cloud Sync & Database Modal */}
+      <CloudSyncModal
+        isOpen={isSyncModalOpen}
+        onClose={() => setIsSyncModalOpen(false)}
       />
     </header>
   );

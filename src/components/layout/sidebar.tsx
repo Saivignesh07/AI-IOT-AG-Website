@@ -21,15 +21,18 @@ import {
   Layers,
   FileSpreadsheet,
   KeyRound,
+  Database,
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import { ChangePasswordModal } from '@/components/change-password-modal';
+import { CloudSyncModal } from '@/components/cloud-sync-modal';
 import { cn } from '@/lib/utils';
 
 export function Sidebar() {
   const pathname = usePathname();
   const { user, role, logout, currentSchool, staffRecord } = useAuth();
   const [isPasswordModalOpen, setIsPasswordModalOpen] = React.useState(false);
+  const [isSyncModalOpen, setIsSyncModalOpen] = React.useState(false);
 
   const adminNav = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -157,6 +160,14 @@ export function Sidebar() {
         </div>
         <div className="space-y-1.5">
           <button
+            onClick={() => setIsSyncModalOpen(true)}
+            className="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-200 hover:text-white bg-emerald-900/50 hover:bg-emerald-900 transition-colors border border-emerald-700/50 cursor-pointer shadow-xs"
+          >
+            <Database className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Cloud Database</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse ml-auto" />
+          </button>
+          <button
             onClick={() => setIsPasswordModalOpen(true)}
             className="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-emerald-200/90 hover:text-white hover:bg-emerald-900/60 transition-colors border border-emerald-800/40 cursor-pointer"
           >
@@ -176,6 +187,11 @@ export function Sidebar() {
       <ChangePasswordModal
         isOpen={isPasswordModalOpen}
         onClose={() => setIsPasswordModalOpen(false)}
+      />
+
+      <CloudSyncModal
+        isOpen={isSyncModalOpen}
+        onClose={() => setIsSyncModalOpen(false)}
       />
     </aside>
   );
