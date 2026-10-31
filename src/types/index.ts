@@ -33,6 +33,7 @@ export interface Profile {
   role: UserRole;
   phone?: string;
   avatar_url?: string;
+  password?: string;
   created_at: string;
   updated_at: string;
 }

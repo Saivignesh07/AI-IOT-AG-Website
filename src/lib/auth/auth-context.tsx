@@ -12,10 +12,11 @@ interface AuthContextType {
   staffRecord: SchoolStaff | null;
   facultyRecord: Faculty | null;
   isLoading: boolean;
-  login: (email: string, role?: UserRole) => Promise<boolean>;
+  login: (email: string, passwordInput?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   switchUser: (email: string) => void;
   setCurrentSchool: (school: School | null) => void;
+  changePassword: (oldPass: string, newPass: string) => { success: boolean; message: string };
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -75,24 +76,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loadUserData(savedEmail);
       } else {
         // Default login as Admin for instantaneous preview
-        loadUserData('admin@agriguardian.io');
+        loadUserData('agriguardians@gmail.com');
       }
     } catch {
-      loadUserData('admin@agriguardian.io');
+      loadUserData('agriguardians@gmail.com');
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  const login = async (email: string): Promise<boolean> => {
-    const success = loadUserData(email);
-    if (success) {
-      const found = dbRepository.getProfiles().find((p) => p.email.toLowerCase() === email.toLowerCase());
-      if (found?.role === 'admin') router.push('/admin/dashboard');
-      else if (found?.role === 'faculty') router.push('/faculty/dashboard');
-      else router.push('/staff/dashboard');
+  const login = async (email: string, passwordInput?: string): Promise<{ success: boolean; error?: string }> => {
+    const profiles = dbRepository.getProfiles();
+    const found = profiles.find((p) => p.email.toLowerCase() === email.toLowerCase().trim());
+    if (!found) {
+      return { success: false, error: 'No registered account found with this email address.' };
     }
-    return success;
+
+    if (passwordInput && found.password && found.password !== passwordInput.trim()) {
+      return { success: false, error: 'Incorrect password. Please verify your credentials.' };
+    }
+
+    const ok = loadUserData(found.email);
+    if (ok) {
+      if (found.role === 'admin') router.push('/admin/dashboard');
+      else if (found.role === 'faculty') router.push('/faculty/dashboard');
+      else router.push('/staff/dashboard');
+      return { success: true };
+    }
+    return { success: false, error: 'Failed to authenticate user session.' };
+  };
+
+  const changePassword = (oldPass: string, newPass: string): { success: boolean; message: string } => {
+    if (!user) return { success: false, message: 'You must be logged in to change your password.' };
+    const res = dbRepository.changePassword(user.id, oldPass, newPass);
+    if (res.success) {
+      loadUserData(user.email);
+    }
+    return res;
   };
 
   const logout = () => {
@@ -140,6 +160,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         logout,
         switchUser,
         setCurrentSchool,
+        changePassword,
       }}
     >
       {children}

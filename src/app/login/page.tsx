@@ -29,9 +29,9 @@ export default function LoginPage() {
 
     setIsSubmitting(true);
     try {
-      const ok = await login(email);
-      if (!ok) {
-        setError('No registered account found with this email. Use one of the demo credentials below.');
+      const res = await login(email, password);
+      if (!res.success) {
+        setError(res.error || 'Authentication failed. Please verify your email and password.');
       }
     } catch {
       setError('Authentication failed. Please verify your credentials.');
@@ -40,9 +40,9 @@ export default function LoginPage() {
     }
   };
 
-  const handleDemoLogin = (demoEmail: string) => {
+  const handleDemoLogin = (demoEmail: string, demoPass: string) => {
     setEmail(demoEmail);
-    setPassword('••••••••');
+    setPassword(demoPass);
     switchUser(demoEmail);
   };
 
@@ -85,7 +85,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@agriguardian.io"
+                  placeholder="agriguardians@gmail.com"
                   className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:border-transparent text-slate-800"
                 />
               </div>
@@ -98,7 +98,7 @@ export default function LoginPage() {
                 </label>
                 <a
                   href="#demo"
-                  onClick={() => alert('Password reset links are managed by your AgriGuardian Administrator.')}
+                  onClick={() => alert('Password reset links are managed by your AgriGuardian Administrator. You can also change your password in the top bar after logging in.')}
                   className="text-xs text-emerald-700 hover:text-emerald-800 font-medium"
                 >
                   Forgot password?
@@ -132,53 +132,104 @@ export default function LoginPage() {
           <div className="mt-6 pt-6 border-t border-slate-200">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                ⚡ Instant One-Click Demo Access
+                ⚡ Instant One-Click Login & Credentials
               </span>
               <ShieldCheck className="w-4 h-4 text-emerald-700" />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+              {/* Admin */}
               <button
                 type="button"
-                onClick={() => handleDemoLogin('admin@agriguardian.io')}
+                onClick={() => handleDemoLogin('agriguardians@gmail.com', 'admin@2026')}
                 className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 transition-colors flex items-center justify-between group cursor-pointer"
               >
                 <div>
                   <div className="text-xs font-bold text-slate-800 group-hover:text-amber-800 flex items-center gap-1.5">
                     <span>👑 AgriGuardian Admin</span>
-                    <span className="text-[10px] font-semibold bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded">Master Control</span>
+                    <span className="text-[10px] font-semibold bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded">admin@2026</span>
                   </div>
-                  <div className="text-[11px] text-slate-500">admin@agriguardian.io</div>
+                  <div className="text-[11px] text-slate-500">agriguardians@gmail.com</div>
                 </div>
                 <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-amber-600" />
               </button>
 
+              {/* Faculty 1 */}
               <button
                 type="button"
-                onClick={() => handleDemoLogin('dr.arun@agriguardian.io')}
+                onClick={() => handleDemoLogin('vigneshvid2006@gmail.com', 'Faculty@2026')}
                 className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 transition-colors flex items-center justify-between group cursor-pointer"
               >
                 <div>
                   <div className="text-xs font-bold text-slate-800 group-hover:text-blue-800 flex items-center gap-1.5">
-                    <span>🎓 AgriGuardian Faculty</span>
-                    <span className="text-[10px] font-semibold bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded">Attendance & Grading</span>
+                    <span>🎓 Faculty 1: Mr.Saivignesh R V</span>
+                    <span className="text-[10px] font-semibold bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded">Faculty@2026</span>
                   </div>
-                  <div className="text-[11px] text-slate-500">dr.arun@agriguardian.io (Dr. Arun Kumar)</div>
+                  <div className="text-[11px] text-slate-500">vigneshvid2006@gmail.com</div>
                 </div>
                 <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-blue-600" />
               </button>
 
+              {/* Faculty 2 */}
               <button
                 type="button"
-                onClick={() => handleDemoLogin('staff.jainschool@school.edu')}
+                onClick={() => handleDemoLogin('haripriya5102007@gmail.com', 'Faculty@2026')}
+                className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 transition-colors flex items-center justify-between group cursor-pointer"
+              >
+                <div>
+                  <div className="text-xs font-bold text-slate-800 group-hover:text-blue-800 flex items-center gap-1.5">
+                    <span>🎓 Faculty 2: Ms.Haripriya S</span>
+                    <span className="text-[10px] font-semibold bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded">Faculty@2026</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500">haripriya5102007@gmail.com</div>
+                </div>
+                <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-blue-600" />
+              </button>
+
+              {/* Faculty 3 */}
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('tleo76645@gmail.com', 'Faculty@2026')}
+                className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 transition-colors flex items-center justify-between group cursor-pointer"
+              >
+                <div>
+                  <div className="text-xs font-bold text-slate-800 group-hover:text-blue-800 flex items-center gap-1.5">
+                    <span>🎓 Faculty 3: Mr.Shengian T</span>
+                    <span className="text-[10px] font-semibold bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded">Faculty@2026</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500">tleo76645@gmail.com</div>
+                </div>
+                <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-blue-600" />
+              </button>
+
+              {/* Faculty 4 */}
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('stinyalbert100@gmail.com', 'Faculty@2026')}
+                className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 transition-colors flex items-center justify-between group cursor-pointer"
+              >
+                <div>
+                  <div className="text-xs font-bold text-slate-800 group-hover:text-blue-800 flex items-center gap-1.5">
+                    <span>🎓 Faculty 4: Ms.Stiny A</span>
+                    <span className="text-[10px] font-semibold bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded">Faculty@2026</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500">stinyalbert100@gmail.com</div>
+                </div>
+                <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-blue-600" />
+              </button>
+
+              {/* Staff 1 */}
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('staffagjain@gmail.com', 'AGjain@2026')}
                 className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 transition-colors flex items-center justify-between group cursor-pointer"
               >
                 <div>
                   <div className="text-xs font-bold text-slate-800 group-hover:text-emerald-900 flex items-center gap-1.5">
-                    <span>🏫 School Staff (Shree A G Jain School)</span>
-                    <span className="text-[10px] font-semibold bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded">Strict Read-Only</span>
+                    <span>🏫 School Staff: Mrs. Bharathi</span>
+                    <span className="text-[10px] font-semibold bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded">AGjain@2026</span>
                   </div>
-                  <div className="text-[11px] text-slate-500">staff.jainschool@school.edu (Campus Authority)</div>
+                  <div className="text-[11px] text-slate-500">staffagjain@gmail.com (Shree A G Jain School)</div>
                 </div>
                 <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-emerald-700" />
               </button>

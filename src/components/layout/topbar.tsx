@@ -9,10 +9,12 @@ import {
   Lock,
   ChevronDown,
   Sparkles,
+  KeyRound,
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import { dbRepository } from '@/lib/db/repository';
 import { isSupabaseConfigured } from '@/lib/supabase/client';
+import { ChangePasswordModal } from '@/components/change-password-modal';
 import { School } from '@/types';
 
 export function Topbar() {
@@ -21,6 +23,7 @@ export function Topbar() {
   const [schools, setSchools] = useState<School[]>([]);
   const [showSchoolDropdown, setShowSchoolDropdown] = useState(false);
   const [showRoleDropdown, setShowRoleDropdown] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   useEffect(() => {
     setSchools(dbRepository.getSchools());
@@ -145,46 +148,90 @@ export function Topbar() {
           </button>
 
           {showRoleDropdown && (
-            <div className="absolute right-0 mt-1 w-60 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 text-xs">
+            <div className="absolute right-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 text-xs max-h-80 overflow-y-auto">
               <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100">
                 Switch Test Role & View
               </div>
               <button
                 onClick={() => {
-                  switchUser('admin@agriguardian.io');
+                  switchUser('agriguardians@gmail.com');
                   setShowRoleDropdown(false);
                 }}
                 className="w-full text-left px-3 py-2 hover:bg-amber-50 text-slate-700 flex items-center justify-between cursor-pointer"
               >
                 <div>
                   <div className="font-semibold text-slate-800">👑 Admin Portal</div>
-                  <div className="text-[10px] text-slate-500">Vikramaditya Roy (All Control)</div>
+                  <div className="text-[10px] text-slate-500">agriguardians@gmail.com</div>
                 </div>
                 {role === 'admin' && <span className="text-amber-600 font-bold">Active</span>}
               </button>
+
               <button
                 onClick={() => {
-                  switchUser('dr.arun@agriguardian.io');
+                  switchUser('vigneshvid2006@gmail.com');
                   setShowRoleDropdown(false);
                 }}
                 className="w-full text-left px-3 py-2 hover:bg-blue-50 text-slate-700 flex items-center justify-between cursor-pointer"
               >
                 <div>
-                  <div className="font-semibold text-slate-800">🎓 Faculty Portal</div>
-                  <div className="text-[10px] text-slate-500">Dr. Arun Kumar (Mark & Teach)</div>
+                  <div className="font-semibold text-slate-800">🎓 Faculty 1 (Mr.Saivignesh)</div>
+                  <div className="text-[10px] text-slate-500">vigneshvid2006@gmail.com</div>
                 </div>
-                {role === 'faculty' && <span className="text-blue-600 font-bold">Active</span>}
+                {user?.email === 'vigneshvid2006@gmail.com' && <span className="text-blue-600 font-bold">Active</span>}
               </button>
+
               <button
                 onClick={() => {
-                  switchUser('staff.jainschool@school.edu');
+                  switchUser('haripriya5102007@gmail.com');
+                  setShowRoleDropdown(false);
+                }}
+                className="w-full text-left px-3 py-2 hover:bg-blue-50 text-slate-700 flex items-center justify-between cursor-pointer"
+              >
+                <div>
+                  <div className="font-semibold text-slate-800">🎓 Faculty 2 (Ms.Haripriya)</div>
+                  <div className="text-[10px] text-slate-500">haripriya5102007@gmail.com</div>
+                </div>
+                {user?.email === 'haripriya5102007@gmail.com' && <span className="text-blue-600 font-bold">Active</span>}
+              </button>
+
+              <button
+                onClick={() => {
+                  switchUser('tleo76645@gmail.com');
+                  setShowRoleDropdown(false);
+                }}
+                className="w-full text-left px-3 py-2 hover:bg-blue-50 text-slate-700 flex items-center justify-between cursor-pointer"
+              >
+                <div>
+                  <div className="font-semibold text-slate-800">🎓 Faculty 3 (Mr.Shengian)</div>
+                  <div className="text-[10px] text-slate-500">tleo76645@gmail.com</div>
+                </div>
+                {user?.email === 'tleo76645@gmail.com' && <span className="text-blue-600 font-bold">Active</span>}
+              </button>
+
+              <button
+                onClick={() => {
+                  switchUser('stinyalbert100@gmail.com');
+                  setShowRoleDropdown(false);
+                }}
+                className="w-full text-left px-3 py-2 hover:bg-blue-50 text-slate-700 flex items-center justify-between cursor-pointer"
+              >
+                <div>
+                  <div className="font-semibold text-slate-800">🎓 Faculty 4 (Ms.Stiny)</div>
+                  <div className="text-[10px] text-slate-500">stinyalbert100@gmail.com</div>
+                </div>
+                {user?.email === 'stinyalbert100@gmail.com' && <span className="text-blue-600 font-bold">Active</span>}
+              </button>
+
+              <button
+                onClick={() => {
+                  switchUser('staffagjain@gmail.com');
                   setShowRoleDropdown(false);
                 }}
                 className="w-full text-left px-3 py-2 hover:bg-emerald-50 text-slate-700 flex items-center justify-between cursor-pointer"
               >
                 <div>
-                  <div className="font-semibold text-slate-800">🏫 Staff (Shree A G Jain School)</div>
-                  <div className="text-[10px] text-slate-500">School Authority (Strict Read-Only)</div>
+                  <div className="font-semibold text-slate-800">🏫 Staff (Mrs. Bharathi)</div>
+                  <div className="text-[10px] text-slate-500">staffagjain@gmail.com</div>
                 </div>
                 {role === 'staff' && (
                   <span className="text-emerald-600 font-bold">Active</span>
@@ -193,6 +240,16 @@ export function Topbar() {
             </div>
           )}
         </div>
+
+        {/* Change Password Button */}
+        <button
+          onClick={() => setIsPasswordModalOpen(true)}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 transition-colors cursor-pointer"
+          title="Change login password"
+        >
+          <KeyRound className="w-3.5 h-3.5 text-emerald-700" />
+          <span className="hidden md:inline">Change Password</span>
+        </button>
 
         {/* Notifications Icon */}
         <button
@@ -203,6 +260,12 @@ export function Topbar() {
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-600" />
         </button>
       </div>
+
+      {/* Change Password Modal */}
+      <ChangePasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
     </header>
   );
 }

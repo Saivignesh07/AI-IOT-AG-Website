@@ -49,7 +49,7 @@ import {
 } from './initial-data';
 import { calculateAssessmentGrade } from '@/lib/utils';
 
-const STORAGE_KEY = 'agriguardian_db_v2_agjain';
+const STORAGE_KEY = 'agriguardian_db_v4_credentials';
 
 interface DatabaseState {
   schools: School[];
@@ -208,6 +208,29 @@ class Repository {
   // FACULTY & STAFF
   public getProfiles(): Profile[] {
     return this.state.profiles;
+  }
+
+  public changePassword(
+    profileId: string,
+    oldPassword: string,
+    newPassword: string
+  ): { success: boolean; message: string } {
+    const profile = this.state.profiles.find((p) => p.id === profileId);
+    if (!profile) return { success: false, message: 'User profile not found.' };
+
+    if (profile.password && profile.password !== oldPassword) {
+      return { success: false, message: 'Current password is incorrect.' };
+    }
+
+    if (!newPassword || newPassword.length < 6) {
+      return { success: false, message: 'New password must be at least 6 characters long.' };
+    }
+
+    profile.password = newPassword;
+    profile.updated_at = new Date().toISOString();
+    this.addAuditLog('CHANGE_PASSWORD', 'profiles', profile.id, { email: profile.email });
+    this.saveToStorage();
+    return { success: true, message: 'Password updated successfully!' };
   }
 
   public getFaculty(): (Faculty & { profile?: Profile })[] {

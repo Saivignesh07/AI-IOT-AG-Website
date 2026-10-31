@@ -20,13 +20,16 @@ import {
   Leaf,
   Layers,
   FileSpreadsheet,
+  KeyRound,
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
+import { ChangePasswordModal } from '@/components/change-password-modal';
 import { cn } from '@/lib/utils';
 
 export function Sidebar() {
   const pathname = usePathname();
   const { user, role, logout, currentSchool, staffRecord } = useAuth();
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = React.useState(false);
 
   const adminNav = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -152,14 +155,28 @@ export function Sidebar() {
             <p className="text-[11px] text-emerald-300/70 truncate">{user?.email}</p>
           </div>
         </div>
-        <button
-          onClick={logout}
-          className="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-emerald-200/80 hover:text-white hover:bg-emerald-900/60 transition-colors border border-emerald-800/40 cursor-pointer"
-        >
-          <LogOut className="w-3.5 h-3.5" />
-          <span>Sign Out</span>
-        </button>
+        <div className="space-y-1.5">
+          <button
+            onClick={() => setIsPasswordModalOpen(true)}
+            className="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-emerald-200/90 hover:text-white hover:bg-emerald-900/60 transition-colors border border-emerald-800/40 cursor-pointer"
+          >
+            <KeyRound className="w-3.5 h-3.5" />
+            <span>Change Password</span>
+          </button>
+          <button
+            onClick={logout}
+            className="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-rose-300 hover:text-rose-100 hover:bg-rose-950/40 transition-colors border border-rose-900/40 cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sign Out</span>
+          </button>
+        </div>
       </div>
+
+      <ChangePasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
     </aside>
   );
 }
