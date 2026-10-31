@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Leaf, Lock, Mail, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Leaf, Lock, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import { Button } from '@/components/ui/button';
 import { Alert } from '@/components/ui/alert';
@@ -12,13 +12,13 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login, switchUser } = useAuth();
+  const { login } = useAuth();
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!email) {
+    if (!email.trim()) {
       setError('Please enter your email address');
       return;
     }
@@ -29,7 +29,7 @@ export default function LoginPage() {
 
     setIsSubmitting(true);
     try {
-      const res = await login(email, password);
+      const res = await login(email.trim().toLowerCase(), password);
       if (!res.success) {
         setError(res.error || 'Authentication failed. Please verify your email and password.');
       }
@@ -38,12 +38,6 @@ export default function LoginPage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleDemoLogin = (demoEmail: string, demoPass: string) => {
-    setEmail(demoEmail);
-    setPassword(demoPass);
-    switchUser(demoEmail);
   };
 
   return (
@@ -85,7 +79,8 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="agriguardians@gmail.com"
+                  placeholder="name@institution.com"
+                  autoComplete="email"
                   className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:border-transparent text-slate-800"
                 />
               </div>
@@ -96,13 +91,13 @@ export default function LoginPage() {
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
                   Password
                 </label>
-                <a
-                  href="#demo"
-                  onClick={() => alert('Password reset links are managed by your AgriGuardian Administrator. You can also change your password in the top bar after logging in.')}
-                  className="text-xs text-emerald-700 hover:text-emerald-800 font-medium"
+                <button
+                  type="button"
+                  onClick={() => alert('Password resets are managed by your institution administrator. If you already have access, you can also change your password in the top bar after logging in.')}
+                  className="text-xs text-emerald-700 hover:text-emerald-800 font-medium cursor-pointer"
                 >
                   Forgot password?
-                </a>
+                </button>
               </div>
               <div className="relative">
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
@@ -111,6 +106,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
+                  autoComplete="current-password"
                   className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:border-transparent text-slate-800"
                 />
               </div>
@@ -120,7 +116,7 @@ export default function LoginPage() {
               type="submit"
               variant="primary"
               size="lg"
-              className="w-full mt-2 font-semibold flex items-center justify-center gap-2"
+              className="w-full mt-2 font-semibold flex items-center justify-center gap-2 cursor-pointer"
               isLoading={isSubmitting}
             >
               <span>Sign In to Portal</span>
@@ -128,118 +124,15 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Preset One-Click Portals */}
-          <div className="mt-6 pt-6 border-t border-slate-200">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                ⚡ Instant One-Click Login & Credentials
-              </span>
-              <ShieldCheck className="w-4 h-4 text-emerald-700" />
-            </div>
-
-            <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
-              {/* Admin */}
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('agriguardians@gmail.com', 'admin@2026')}
-                className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 transition-colors flex items-center justify-between group cursor-pointer"
-              >
-                <div>
-                  <div className="text-xs font-bold text-slate-800 group-hover:text-amber-800 flex items-center gap-1.5">
-                    <span>👑 AgriGuardian Admin</span>
-                    <span className="text-[10px] font-semibold bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded">admin@2026</span>
-                  </div>
-                  <div className="text-[11px] text-slate-500">agriguardians@gmail.com</div>
-                </div>
-                <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-amber-600" />
-              </button>
-
-              {/* Faculty 1 */}
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('vigneshvid2006@gmail.com', 'Faculty@2026')}
-                className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 transition-colors flex items-center justify-between group cursor-pointer"
-              >
-                <div>
-                  <div className="text-xs font-bold text-slate-800 group-hover:text-blue-800 flex items-center gap-1.5">
-                    <span>🎓 Faculty 1: Mr.Saivignesh R V</span>
-                    <span className="text-[10px] font-semibold bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded">Faculty@2026</span>
-                  </div>
-                  <div className="text-[11px] text-slate-500">vigneshvid2006@gmail.com</div>
-                </div>
-                <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-blue-600" />
-              </button>
-
-              {/* Faculty 2 */}
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('haripriya5102007@gmail.com', 'Faculty@2026')}
-                className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 transition-colors flex items-center justify-between group cursor-pointer"
-              >
-                <div>
-                  <div className="text-xs font-bold text-slate-800 group-hover:text-blue-800 flex items-center gap-1.5">
-                    <span>🎓 Faculty 2: Ms.Haripriya S</span>
-                    <span className="text-[10px] font-semibold bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded">Faculty@2026</span>
-                  </div>
-                  <div className="text-[11px] text-slate-500">haripriya5102007@gmail.com</div>
-                </div>
-                <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-blue-600" />
-              </button>
-
-              {/* Faculty 3 */}
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('tleo76645@gmail.com', 'Faculty@2026')}
-                className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 transition-colors flex items-center justify-between group cursor-pointer"
-              >
-                <div>
-                  <div className="text-xs font-bold text-slate-800 group-hover:text-blue-800 flex items-center gap-1.5">
-                    <span>🎓 Faculty 3: Mr.Shengian T</span>
-                    <span className="text-[10px] font-semibold bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded">Faculty@2026</span>
-                  </div>
-                  <div className="text-[11px] text-slate-500">tleo76645@gmail.com</div>
-                </div>
-                <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-blue-600" />
-              </button>
-
-              {/* Faculty 4 */}
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('stinyalbert100@gmail.com', 'Faculty@2026')}
-                className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 transition-colors flex items-center justify-between group cursor-pointer"
-              >
-                <div>
-                  <div className="text-xs font-bold text-slate-800 group-hover:text-blue-800 flex items-center gap-1.5">
-                    <span>🎓 Faculty 4: Ms.Stiny A</span>
-                    <span className="text-[10px] font-semibold bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded">Faculty@2026</span>
-                  </div>
-                  <div className="text-[11px] text-slate-500">stinyalbert100@gmail.com</div>
-                </div>
-                <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-blue-600" />
-              </button>
-
-              {/* Staff 1 */}
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('staffagjain@gmail.com', 'AGjain@2026')}
-                className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 transition-colors flex items-center justify-between group cursor-pointer"
-              >
-                <div>
-                  <div className="text-xs font-bold text-slate-800 group-hover:text-emerald-900 flex items-center gap-1.5">
-                    <span>🏫 School Staff: Mrs. Bharathi</span>
-                    <span className="text-[10px] font-semibold bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded">AGjain@2026</span>
-                  </div>
-                  <div className="text-[11px] text-slate-500">staffagjain@gmail.com (Shree A G Jain School)</div>
-                </div>
-                <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-emerald-700" />
-              </button>
-            </div>
+          <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-center gap-2 text-slate-400 text-xs">
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <span>Secure Role-Based Authentication</span>
           </div>
         </div>
 
         {/* Security Notice */}
         <p className="mt-4 text-center text-[11px] text-slate-400">
-          Protected by Supabase Auth with PostgreSQL Row Level Security (RLS) policies.
+          Protected by AgriGuardian Security & Row-Level Authorization Policies.
         </p>
       </div>
     </div>

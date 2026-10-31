@@ -74,12 +74,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const savedEmail = localStorage.getItem(AUTH_USER_KEY);
       if (savedEmail) {
         loadUserData(savedEmail);
-      } else {
-        // Default login as Admin for instantaneous preview
-        loadUserData('agriguardians@gmail.com');
       }
-    } catch {
-      loadUserData('agriguardians@gmail.com');
+    } catch (e) {
+      console.warn('Could not restore auth session', e);
     } finally {
       setIsLoading(false);
     }

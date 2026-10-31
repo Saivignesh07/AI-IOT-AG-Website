@@ -8,7 +8,6 @@ import {
   Database,
   Lock,
   ChevronDown,
-  Sparkles,
   KeyRound,
   Menu,
 } from 'lucide-react';
@@ -25,10 +24,9 @@ interface TopbarProps {
 
 export function Topbar({ onToggleMobileMenu }: TopbarProps) {
   const pathname = usePathname();
-  const { role, currentSchool, setCurrentSchool, staffRecord, switchUser, user } = useAuth();
+  const { role, currentSchool, setCurrentSchool, staffRecord, user } = useAuth();
   const [schools, setSchools] = useState<School[]>([]);
   const [showSchoolDropdown, setShowSchoolDropdown] = useState(false);
-  const [showRoleDropdown, setShowRoleDropdown] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
 
@@ -147,110 +145,10 @@ export function Topbar({ onToggleMobileMenu }: TopbarProps) {
           )}
         </div>
 
-        {/* Demo Fast Switcher Dropdown */}
-        <div className="relative">
-          <button
-            onClick={() => setShowRoleDropdown(!showRoleDropdown)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-emerald-800 text-white hover:bg-emerald-900 transition-colors cursor-pointer shadow-xs"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
-            <span className="hidden sm:inline">Role:</span>
-            <span className="font-bold capitalize">{role}</span>
-            <ChevronDown className="w-3 h-3 opacity-80" />
-          </button>
-
-          {showRoleDropdown && (
-            <div className="absolute right-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 text-xs max-h-80 overflow-y-auto">
-              <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100">
-                Switch Test Role & View
-              </div>
-              <button
-                onClick={() => {
-                  switchUser('agriguardians@gmail.com');
-                  setShowRoleDropdown(false);
-                }}
-                className="w-full text-left px-3 py-2 hover:bg-amber-50 text-slate-700 flex items-center justify-between cursor-pointer"
-              >
-                <div>
-                  <div className="font-semibold text-slate-800">👑 Admin Portal</div>
-                  <div className="text-[10px] text-slate-500">agriguardians@gmail.com</div>
-                </div>
-                {role === 'admin' && <span className="text-amber-600 font-bold">Active</span>}
-              </button>
-
-              <button
-                onClick={() => {
-                  switchUser('vigneshvid2006@gmail.com');
-                  setShowRoleDropdown(false);
-                }}
-                className="w-full text-left px-3 py-2 hover:bg-blue-50 text-slate-700 flex items-center justify-between cursor-pointer"
-              >
-                <div>
-                  <div className="font-semibold text-slate-800">🎓 Faculty 1 (Mr.Saivignesh)</div>
-                  <div className="text-[10px] text-slate-500">vigneshvid2006@gmail.com</div>
-                </div>
-                {user?.email === 'vigneshvid2006@gmail.com' && <span className="text-blue-600 font-bold">Active</span>}
-              </button>
-
-              <button
-                onClick={() => {
-                  switchUser('haripriya5102007@gmail.com');
-                  setShowRoleDropdown(false);
-                }}
-                className="w-full text-left px-3 py-2 hover:bg-blue-50 text-slate-700 flex items-center justify-between cursor-pointer"
-              >
-                <div>
-                  <div className="font-semibold text-slate-800">🎓 Faculty 2 (Ms.Haripriya)</div>
-                  <div className="text-[10px] text-slate-500">haripriya5102007@gmail.com</div>
-                </div>
-                {user?.email === 'haripriya5102007@gmail.com' && <span className="text-blue-600 font-bold">Active</span>}
-              </button>
-
-              <button
-                onClick={() => {
-                  switchUser('tleo76645@gmail.com');
-                  setShowRoleDropdown(false);
-                }}
-                className="w-full text-left px-3 py-2 hover:bg-blue-50 text-slate-700 flex items-center justify-between cursor-pointer"
-              >
-                <div>
-                  <div className="font-semibold text-slate-800">🎓 Faculty 3 (Mr.Shengian)</div>
-                  <div className="text-[10px] text-slate-500">tleo76645@gmail.com</div>
-                </div>
-                {user?.email === 'tleo76645@gmail.com' && <span className="text-blue-600 font-bold">Active</span>}
-              </button>
-
-              <button
-                onClick={() => {
-                  switchUser('stinyalbert100@gmail.com');
-                  setShowRoleDropdown(false);
-                }}
-                className="w-full text-left px-3 py-2 hover:bg-blue-50 text-slate-700 flex items-center justify-between cursor-pointer"
-              >
-                <div>
-                  <div className="font-semibold text-slate-800">🎓 Faculty 4 (Ms.Stiny)</div>
-                  <div className="text-[10px] text-slate-500">stinyalbert100@gmail.com</div>
-                </div>
-                {user?.email === 'stinyalbert100@gmail.com' && <span className="text-blue-600 font-bold">Active</span>}
-              </button>
-
-              <button
-                onClick={() => {
-                  switchUser('staffagjain@gmail.com');
-                  setShowRoleDropdown(false);
-                }}
-                className="w-full text-left px-3 py-2 hover:bg-emerald-50 text-slate-700 flex items-center justify-between cursor-pointer"
-              >
-                <div>
-                  <div className="font-semibold text-slate-800">🏫 Staff (Mrs. Bharathi)</div>
-                  <div className="text-[10px] text-slate-500">staffagjain@gmail.com</div>
-                </div>
-                {role === 'staff' && (
-                  <span className="text-emerald-600 font-bold">Active</span>
-                )}
-              </button>
-            </div>
-          )}
+        {/* Active Role Badge */}
+        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white shadow-xs">
+          <span className="hidden sm:inline opacity-80 text-[11px] uppercase tracking-wider">Role:</span>
+          <span className="font-bold capitalize">{role}</span>
         </div>
 
         {/* Change Password Button */}
